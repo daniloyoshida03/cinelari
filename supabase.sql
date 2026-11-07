@@ -13,6 +13,14 @@ create table if not exists public.movies (
 );
 alter table public.movies enable row level security;
 -- Lista intencionalmente pública: qualquer visitante pode ver, adicionar, editar e excluir.
+-- Execute também em projetos existentes para adicionar cartaz e sinopse:
+alter table public.movies add column if not exists overview text;
+alter table public.movies add column if not exists poster_url text;
+-- Recriar políticas de forma segura caso já existam:
+drop policy if exists "Public read CineLari" on public.movies;
+drop policy if exists "Public insert CineLari" on public.movies;
+drop policy if exists "Public update CineLari" on public.movies;
+drop policy if exists "Public delete CineLari" on public.movies;
 create policy "Public read CineLari" on public.movies for select to anon using (true);
 create policy "Public insert CineLari" on public.movies for insert to anon with check (true);
 create policy "Public update CineLari" on public.movies for update to anon using (true) with check (true);
